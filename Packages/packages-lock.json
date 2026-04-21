@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.leoecscommunity.ecslite": {
+      "version": "https://github.com/LeoECSCommunity/ecslite.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "50426caebffc4aec7a6a9c71b9c9bdd579aa45a1"
+    },
     "com.unity.2d.animation": {
       "version": "13.0.4",
       "depth": 0,
