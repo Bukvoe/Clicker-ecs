@@ -1398,6 +1398,7 @@ GameObject:
   - component: {fileID: 3182150098686822077}
   - component: {fileID: 3196398951554931863}
   - component: {fileID: 2681511186775709698}
+  - component: {fileID: 3191569915429373259}
   m_Layer: 5
   m_Name: BusinessCard
   m_TagString: Untagged
@@ -1478,6 +1479,23 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
   m_EffectDistance: {x: 1, y: 1}
   m_UseGraphicAlpha: 1
+--- !u!114 &3191569915429373259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5209695553702596368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 207d14b25b4240be98e840d0652047cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.CodeBase.UI.BusinessCardView
+  _nameField: {fileID: 5316765135342822842}
+  _incomeSlider: {fileID: 1296946675393641099}
+  _levelField: {fileID: 5390659160566653193}
+  _incomeField: {fileID: 5727440407159355601}
+  _levelUpCostField: {fileID: 34382162489611739}
 --- !u!1 &5689227669811565754
 GameObject:
   m_ObjectHideFlags: 0
