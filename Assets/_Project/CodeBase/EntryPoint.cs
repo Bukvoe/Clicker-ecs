@@ -1,6 +1,6 @@
 ﻿using _Project.CodeBase.Configs;
-using _Project.CodeBase.Features.Bootstrap;
-using _Project.CodeBase.Features.Businesses;
+using _Project.CodeBase.Features.BootstrapFeature;
+using _Project.CodeBase.Features.BusinessFeature;
 using _Project.CodeBase.Infrastructure;
 using _Project.CodeBase.UI.Businesses;
 using _Project.CodeBase.UI.Factories;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using _Project.CodeBase.Features.Businesses;
+using _Project.CodeBase.Features.BusinessFeature;
 using _Project.CodeBase.Shared.Interfaces;
 using _Project.CodeBase.UI.Factories;
 using Object = UnityEngine.Object;

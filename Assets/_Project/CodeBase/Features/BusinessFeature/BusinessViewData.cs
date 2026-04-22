@@ -1,4 +1,4 @@
-﻿namespace _Project.CodeBase.Features.Businesses
+﻿namespace _Project.CodeBase.Features.BusinessFeature
 {
     public class BusinessViewData
     {

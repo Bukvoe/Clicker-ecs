@@ -2,7 +2,7 @@
 using _Project.CodeBase.Shared.Interfaces;
 using Leopotam.EcsLite;
 
-namespace _Project.CodeBase.Features.Businesses
+namespace _Project.CodeBase.Features.BusinessFeature
 {
     public class UpdateBusinessesSystem : IEcsInitSystem, IEcsRunSystem
     {

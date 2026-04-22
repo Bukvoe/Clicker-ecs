@@ -1,4 +1,4 @@
-﻿using _Project.CodeBase.Features.Businesses;
+﻿using _Project.CodeBase.Features.BusinessFeature;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

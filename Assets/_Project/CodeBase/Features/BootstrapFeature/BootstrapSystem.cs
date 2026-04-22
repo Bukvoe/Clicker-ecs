@@ -1,13 +1,14 @@
 using _Project.CodeBase.Configs;
+using _Project.CodeBase.Features.BusinessFeature;
 using Leopotam.EcsLite;
 using UnityEngine;
 
-namespace _Project.CodeBase.Features.Bootstrap
+namespace _Project.CodeBase.Features.BootstrapFeature
 {
     internal class BootstrapSystem : IEcsInitSystem
     {
         private readonly GameConfig _gameConfig;
-        private EcsPool<Businesses.Business> _businessPool;
+        private EcsPool<Business> _businessPool;
 
         public BootstrapSystem(GameConfig gameConfig)
         {
@@ -29,7 +30,7 @@ namespace _Project.CodeBase.Features.Bootstrap
         public void Init(EcsSystems systems)
         {
             var world = systems.GetWorld();
-            _businessPool = world.GetPool<Businesses.Business>();
+            _businessPool = world.GetPool<Business>();
 
             foreach (var businessDefinition in _gameConfig.BusinessDefinitions)
             {
