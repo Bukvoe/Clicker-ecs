@@ -4,7 +4,5 @@
     {
         public int Id;
         public int Level;
-        public int BaseIncome;
-        public int BaseCost;
     }
 }

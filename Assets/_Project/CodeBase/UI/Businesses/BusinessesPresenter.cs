@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using _Project.CodeBase.Features.BusinessFeature;
-using _Project.CodeBase.Services;
 using _Project.CodeBase.Shared.Interfaces;
 using _Project.CodeBase.UI.Factories;
 using Object = UnityEngine.Object;
@@ -14,58 +12,56 @@ namespace _Project.CodeBase.UI.Businesses
         private readonly BusinessesView _businessesView;
         private readonly BusinessCardFactory _businessCardFactory;
         private readonly IListener<IReadOnlyList<BusinessViewData>> _dataProvider;
-        private readonly ConfigService _configService;
         private readonly ICommandWriter _commandWriter;
-        private readonly Dictionary<int, BusinessCardView> _cards = new();
+        private readonly Dictionary<int, BusinessCardView> _cardById = new();
+
+        private readonly HashSet<int> _existingIds = new();
+        private readonly List<int> _idsToRemove = new();
 
         public BusinessesPresenter(
             BusinessesView businessesView,
             BusinessCardFactory businessCardFactory,
             ICommandWriter commandWriter,
-            IListener<IReadOnlyList<BusinessViewData>> dataProvider,
-            ConfigService configService)
+            IListener<IReadOnlyList<BusinessViewData>> dataProvider)
         {
             _businessesView = businessesView;
             _businessCardFactory = businessCardFactory;
             _commandWriter = commandWriter;
             _dataProvider = dataProvider;
-            _configService = configService;
 
-            _dataProvider.Changed += DataUpdated;
+            _dataProvider.Changed += OnDataChanged;
         }
 
-        private void DataUpdated(IReadOnlyList<BusinessViewData> viewModels)
+        private void OnDataChanged(IReadOnlyList<BusinessViewData> businessViewDataList)
         {
-            var existingIds = new HashSet<int>();
+            _existingIds.Clear();
+            _idsToRemove.Clear();
 
-            foreach (var businessViewData in viewModels)
+            foreach (var businessViewData in businessViewDataList)
             {
-                existingIds.Add(businessViewData.Id);
+                _existingIds.Add(businessViewData.BusinessId);
 
-                if (!_cards.TryGetValue(businessViewData.Id, out var card))
+                if (!_cardById.TryGetValue(businessViewData.BusinessId, out var card))
                 {
                     card = _businessCardFactory.Create(_businessesView.CardsContainer);
-                    _cards.Add(businessViewData.Id, card);
-
-                    var businessDefinition = _configService.GetBusiness(businessViewData.Id);
-
-                    if (businessDefinition != null)
-                    {
-                        card.SetName(businessDefinition.Name);
-                    }
+                    _cardById.Add(businessViewData.BusinessId, card);
                 }
 
-                card.SetLevel(businessViewData.Level);
-                card.SetIncome(businessViewData.Income);
+                card.SetData(businessViewData);
             }
 
-            foreach (var (id, businessCardView) in _cards.ToList())
+            foreach (var (id, _) in _cardById)
             {
-                if (!existingIds.Contains(id))
+                if (!_existingIds.Contains(id))
                 {
-                    Object.Destroy(businessCardView.gameObject);
-                    _cards.Remove(id);
+                    _idsToRemove.Add(id);
                 }
+            }
+
+            foreach (var cardId in _idsToRemove)
+            {
+                Object.Destroy(_cardById[cardId].gameObject);
+                _cardById.Remove(cardId);
             }
         }
 
@@ -73,7 +69,7 @@ namespace _Project.CodeBase.UI.Businesses
         {
             if (_dataProvider != null)
             {
-                _dataProvider.Changed -= DataUpdated;
+                _dataProvider.Changed -= OnDataChanged;
             }
         }
     }

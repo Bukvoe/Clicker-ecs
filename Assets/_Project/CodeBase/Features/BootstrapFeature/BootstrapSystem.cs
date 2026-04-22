@@ -1,5 +1,6 @@
 using System.Linq;
 using _Project.CodeBase.Features.BusinessFeature;
+using _Project.CodeBase.Features.IncomeFeature;
 using _Project.CodeBase.Services;
 using Leopotam.EcsLite;
 
@@ -18,6 +19,7 @@ namespace _Project.CodeBase.Features.BootstrapFeature
         {
             var world = systems.GetWorld();
             var businessPool = world.GetPool<Business>();
+            var incomeProgressPool = world.GetPool<IncomeProgress>();
 
             foreach (var businessDefinition in _configService.AllBusinesses)
             {
@@ -25,7 +27,10 @@ namespace _Project.CodeBase.Features.BootstrapFeature
 
                 ref var business = ref businessPool.Add(entity);
                 business.Id = businessDefinition.Id;
-                business.Name = businessDefinition.Name;
+                business.Level = _configService.BusinessIdsOnStart.Contains(businessDefinition.Id) ? 1 : 0;
+
+                ref var incomeProgress = ref incomeProgressPool.Add(entity);
+                incomeProgress.CurrentTime = 0f;
             }
         }
     }
