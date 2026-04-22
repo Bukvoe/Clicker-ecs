@@ -1,42 +1,29 @@
-using _Project.CodeBase.Configs;
+using System.Linq;
 using _Project.CodeBase.Features.BusinessFeature;
+using _Project.CodeBase.Services;
 using Leopotam.EcsLite;
-using UnityEngine;
 
 namespace _Project.CodeBase.Features.BootstrapFeature
 {
     internal class BootstrapSystem : IEcsInitSystem
     {
-        private readonly GameConfig _gameConfig;
-        private EcsPool<Business> _businessPool;
+        private readonly ConfigService _configService;
 
-        public BootstrapSystem(GameConfig gameConfig)
+        public BootstrapSystem(ConfigService configService)
         {
-            _gameConfig = gameConfig;
-
-            if (_gameConfig == null)
-            {
-                Debug.LogError($"{nameof(_gameConfig)} is null");
-                return;
-            }
-
-            if (_gameConfig.BusinessDefinitions == null)
-            {
-                Debug.LogError($"{nameof(_gameConfig.BusinessDefinitions)} is null");
-                return;
-            }
+            _configService = configService;
         }
 
         public void Init(EcsSystems systems)
         {
             var world = systems.GetWorld();
-            _businessPool = world.GetPool<Business>();
+            var businessPool = world.GetPool<Business>();
 
-            foreach (var businessDefinition in _gameConfig.BusinessDefinitions)
+            foreach (var businessDefinition in _configService.AllBusinesses)
             {
                 var entity = world.NewEntity();
-                ref var business = ref _businessPool.Add(entity);
 
+                ref var business = ref businessPool.Add(entity);
                 business.Id = businessDefinition.Id;
                 business.Name = businessDefinition.Name;
             }

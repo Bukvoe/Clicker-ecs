@@ -6,6 +6,7 @@ namespace _Project.CodeBase.Configs
     [CreateAssetMenu(fileName = "GameConfig", menuName = "Project/GameConfig")]
     public class GameConfig : ScriptableObject
     {
+        public List<int> BusinessIdsOnStart;
         public List<BusinessDefinition> BusinessDefinitions;
     }
 }

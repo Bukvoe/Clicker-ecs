@@ -12,14 +12,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bba480a9ccc4ebda390b2fa68169044, type: 3}
   m_Name: GameConfig
   m_EditorClassIdentifier: Assembly-CSharp::_Project.CodeBase.Configs.GameConfig
+  BusinessIdsOnStart: 01000000
   BusinessDefinitions:
   - Id: 1
     Name: Business 1
+    IncomeDelay: 3
+    BaseCost: 3
+    BaseIncome: 3
   - Id: 2
     Name: Business 2
+    IncomeDelay: 6
+    BaseCost: 40
+    BaseIncome: 40
   - Id: 3
     Name: Business 3
+    IncomeDelay: 10
+    BaseCost: 200
+    BaseIncome: 200
   - Id: 4
     Name: Business 4
+    IncomeDelay: 17
+    BaseCost: 1000
+    BaseIncome: 1000
   - Id: 5
     Name: Business 5
+    IncomeDelay: 30
+    BaseCost: 5000
+    BaseIncome: 5000

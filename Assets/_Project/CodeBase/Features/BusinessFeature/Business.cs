@@ -3,6 +3,8 @@
     public struct Business
     {
         public int Id;
-        public string Name;
+        public int Level;
+        public int BaseIncome;
+        public int BaseCost;
     }
 }

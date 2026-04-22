@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using _Project.CodeBase.Features.BusinessFeature;
+using _Project.CodeBase.Services;
 using _Project.CodeBase.Shared.Interfaces;
 using _Project.CodeBase.UI.Factories;
 using Object = UnityEngine.Object;
@@ -13,6 +14,7 @@ namespace _Project.CodeBase.UI.Businesses
         private readonly BusinessesView _businessesView;
         private readonly BusinessCardFactory _businessCardFactory;
         private readonly IListener<IReadOnlyList<BusinessViewData>> _dataProvider;
+        private readonly ConfigService _configService;
         private readonly ICommandWriter _commandWriter;
         private readonly Dictionary<int, BusinessCardView> _cards = new();
 
@@ -20,12 +22,14 @@ namespace _Project.CodeBase.UI.Businesses
             BusinessesView businessesView,
             BusinessCardFactory businessCardFactory,
             ICommandWriter commandWriter,
-            IListener<IReadOnlyList<BusinessViewData>> dataProvider)
+            IListener<IReadOnlyList<BusinessViewData>> dataProvider,
+            ConfigService configService)
         {
             _businessesView = businessesView;
             _businessCardFactory = businessCardFactory;
             _commandWriter = commandWriter;
             _dataProvider = dataProvider;
+            _configService = configService;
 
             _dataProvider.Changed += DataUpdated;
         }
@@ -34,25 +38,33 @@ namespace _Project.CodeBase.UI.Businesses
         {
             var existingIds = new HashSet<int>();
 
-            foreach (var vm in viewModels)
+            foreach (var businessViewData in viewModels)
             {
-                existingIds.Add(vm.Id);
+                existingIds.Add(businessViewData.Id);
 
-                if (!_cards.TryGetValue(vm.Id, out var card))
+                if (!_cards.TryGetValue(businessViewData.Id, out var card))
                 {
                     card = _businessCardFactory.Create(_businessesView.CardsContainer);
-                    _cards.Add(vm.Id, card);
+                    _cards.Add(businessViewData.Id, card);
+
+                    var businessDefinition = _configService.GetBusiness(businessViewData.Id);
+
+                    if (businessDefinition != null)
+                    {
+                        card.SetName(businessDefinition.Name);
+                    }
                 }
 
-                card.Bind(vm);
+                card.SetLevel(businessViewData.Level);
+                card.SetIncome(businessViewData.Income);
             }
 
-            foreach (var kv in _cards.ToList())
+            foreach (var (id, businessCardView) in _cards.ToList())
             {
-                if (!existingIds.Contains(kv.Key))
+                if (!existingIds.Contains(id))
                 {
-                    Object.Destroy(kv.Value.gameObject);
-                    _cards.Remove(kv.Key);
+                    Object.Destroy(businessCardView.gameObject);
+                    _cards.Remove(id);
                 }
             }
         }

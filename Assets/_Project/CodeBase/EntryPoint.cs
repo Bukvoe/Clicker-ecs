@@ -2,6 +2,7 @@
 using _Project.CodeBase.Features.BootstrapFeature;
 using _Project.CodeBase.Features.BusinessFeature;
 using _Project.CodeBase.Infrastructure;
+using _Project.CodeBase.Services;
 using _Project.CodeBase.UI.Businesses;
 using _Project.CodeBase.UI.Factories;
 using Leopotam.EcsLite;
@@ -24,15 +25,17 @@ namespace _Project.CodeBase
         {
             _world = new EcsWorld();
 
+            var configService = new ConfigService(_gameConfig);
+
             var commandWriter = new EcsCommandWriter(_world);
             var cardFactory = new BusinessCardFactory(_businessCardViewPrefab);
             var businessListProvider = new BusinessListProvider();
 
-            _businessesPresenter = new BusinessesPresenter(_businessesView, cardFactory, commandWriter, businessListProvider);
+            _businessesPresenter = new BusinessesPresenter(_businessesView, cardFactory, commandWriter, businessListProvider, configService);
 
             _systems = new EcsSystems(_world);
             _systems
-                .Add(new BootstrapSystem(_gameConfig))
+                .Add(new BootstrapSystem(configService))
                 .Add(new UpdateBusinessesSystem(businessListProvider));
 
             _systems.Init();

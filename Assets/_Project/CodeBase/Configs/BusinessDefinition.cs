@@ -7,5 +7,8 @@ namespace _Project.CodeBase.Configs
     {
         public int Id;
         public string Name;
+        public float IncomeDelay;
+        public int BaseCost;
+        public int BaseIncome;
     }
 }
