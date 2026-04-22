@@ -24,8 +24,9 @@ namespace _Project.CodeBase.Features.IncomeFeature
             var world = systems.GetWorld();
 
             _incomeBusinessesFilter = world.Filter<Business>()
-                           .Inc<IncomeProgress>()
-                           .End();
+                .Inc<OwnedBusiness>()
+                .Inc<IncomeProgress>()
+                .End();
 
             _businessPool = world.GetPool<Business>();
             _incomeProgressPool = world.GetPool<IncomeProgress>();
