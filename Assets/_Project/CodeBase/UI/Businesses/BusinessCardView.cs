@@ -1,4 +1,4 @@
-﻿using _Project.CodeBase.Features.Businesses;
+﻿using _Project.CodeBase.Features.BusinessFeature;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,34 +13,13 @@ namespace _Project.CodeBase.UI.Businesses
         [SerializeField] private TextMeshProUGUI _incomeField;
         [SerializeField] private TextMeshProUGUI _levelUpCostField;
 
-        public void Bind(BusinessViewData businessViewData)
+        public void SetData(BusinessViewData data)
         {
-            _nameField.text = businessViewData.Name;
-        }
-
-        public void SetName(string name)
-        {
-            _nameField.text = name;
-        }
-
-        public void SetIncomeProgress(float incomeProgress)
-        {
-            _incomeSlider.value = incomeProgress;
-        }
-
-        public void SetLevel(int level)
-        {
-            _levelField.text = $"{level}";
-        }
-
-        public void SetIncome(string income)
-        {
-            _incomeField.text = income;
-        }
-
-        public void SetLevelUpCost(string levelUpCost)
-        {
-            _levelUpCostField.text = levelUpCost;
+            _nameField.text = data.Name;
+            _levelField.text = $"{data.Level}";
+            _incomeField.text = $"${data.Income}";
+            _levelUpCostField.text = $"${data.Cost}";
+            _incomeSlider.value = data.IncomeProgress;
         }
     }
 }

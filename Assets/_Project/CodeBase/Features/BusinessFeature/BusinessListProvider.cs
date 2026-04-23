@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using _Project.CodeBase.Shared.Interfaces;
 
-namespace _Project.CodeBase.Features.Businesses
+namespace _Project.CodeBase.Features.BusinessFeature
 {
     public class BusinessListProvider : IListener<IReadOnlyList<BusinessViewData>>, IUpdater<IReadOnlyList<BusinessViewData>>
     {
