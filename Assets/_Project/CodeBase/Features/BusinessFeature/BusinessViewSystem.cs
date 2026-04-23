@@ -14,6 +14,7 @@ namespace _Project.CodeBase.Features.BusinessFeature
         private readonly List<BusinessViewData> _businesses = new();
         private readonly IncomeService _incomeService;
         private readonly ConfigService _configService;
+        private readonly LevelUpService _levelUpService;
 
         private EcsFilter _allBusinessesFilter;
         private EcsPool<Business> _businessPool;
@@ -22,10 +23,12 @@ namespace _Project.CodeBase.Features.BusinessFeature
         public BusinessViewSystem(
             IUpdater<IReadOnlyList<BusinessViewData>> businessListUpdater,
             ConfigService configService,
-            IncomeService incomeService)
+            IncomeService incomeService,
+            LevelUpService levelUpService)
         {
             _businessListUpdater = businessListUpdater;
             _incomeService = incomeService;
+            _levelUpService = levelUpService;
             _configService = configService;
         }
 
@@ -65,12 +68,11 @@ namespace _Project.CodeBase.Features.BusinessFeature
                     Level = business.Level,
                     Income = business.Level > 0 ? _incomeService.CalculateIncome(business) : businessDefinition.BaseIncome,
                     IncomeProgress = incomeProgress.Time.NormalizeProgress(businessDefinition.IncomeDelay),
-                    Cost = businessDefinition.BaseCost,
+                    Cost = _levelUpService.CalculateLevelUpCost(business),
                 });
             }
 
             _businessListUpdater.Update(_businesses);
         }
-
     }
 }

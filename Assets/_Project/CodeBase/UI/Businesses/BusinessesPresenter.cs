@@ -45,6 +45,7 @@ namespace _Project.CodeBase.UI.Businesses
                 {
                     card = _businessCardFactory.Create(_businessesView.CardsContainer);
                     _cardById.Add(businessViewData.BusinessId, card);
+                    card.LevelUpClicked += OnLevelUpClicked;
                 }
 
                 card.SetData(businessViewData);
@@ -60,9 +61,19 @@ namespace _Project.CodeBase.UI.Businesses
 
             foreach (var cardId in _idsToRemove)
             {
-                Object.Destroy(_cardById[cardId].gameObject);
+                var card = _cardById[cardId];
+                card.LevelUpClicked -= OnLevelUpClicked;
+                Object.Destroy(card.gameObject);
                 _cardById.Remove(cardId);
             }
+        }
+
+        private void OnLevelUpClicked(int businessId)
+        {
+            _commandWriter.WriteCommand(new BusinessLevelUpCommand
+            {
+                BusinessId = businessId,
+            });
         }
 
         public void Dispose()

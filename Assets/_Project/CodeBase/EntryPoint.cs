@@ -32,6 +32,7 @@ namespace _Project.CodeBase
 
             var configService = new ConfigService(_gameConfig);
             var incomeService = new IncomeService(configService);
+            var levelUpService = new LevelUpService(configService);
 
             var commandWriter = new EcsCommandWriter(_world);
             var cardFactory = new BusinessCardFactory(_businessCardViewPrefab);
@@ -47,8 +48,9 @@ namespace _Project.CodeBase
                 .Add(new BootstrapSystem(configService))
                 .Add(new IncomeTimerSystem())
                 .Add(new IncomeSystem(incomeService))
+                .Add(new BusinessLevelUpSystem(levelUpService))
                 .Add(new BalanceViewSystem(balanceProvider))
-                .Add(new BusinessViewSystem(businessListProvider, configService, incomeService));
+                .Add(new BusinessViewSystem(businessListProvider, configService, incomeService, levelUpService));
 
             _systems.Init();
         }

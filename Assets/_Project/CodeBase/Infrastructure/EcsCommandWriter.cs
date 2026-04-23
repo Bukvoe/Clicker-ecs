@@ -1,5 +1,4 @@
-﻿using System.Windows.Input;
-using _Project.CodeBase.Shared.Interfaces;
+﻿using _Project.CodeBase.Shared.Interfaces;
 using Leopotam.EcsLite;
 
 namespace _Project.CodeBase.Infrastructure

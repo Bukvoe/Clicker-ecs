@@ -605,7 +605,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 17
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -1495,6 +1495,8 @@ MonoBehaviour:
   _incomeSlider: {fileID: 1296946675393641099}
   _levelField: {fileID: 5390659160566653193}
   _incomeField: {fileID: 5727440407159355601}
+  _levelUpButton: {fileID: 8787355204802966413}
+  _levelUpLabelField: {fileID: 3872512033947870471}
   _levelUpCostField: {fileID: 34382162489611739}
 --- !u!1 &5689227669811565754
 GameObject:
@@ -1915,7 +1917,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 17
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535

@@ -1,5 +1,3 @@
-using System.Windows.Input;
-
 namespace _Project.CodeBase.Shared.Interfaces
 {
     public interface ICommandWriter
