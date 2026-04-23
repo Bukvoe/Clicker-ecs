@@ -17,7 +17,7 @@ namespace _Project.CodeBase.Features.BusinessFeature
 
         private EcsFilter _allBusinessesFilter;
         private EcsPool<Business> _businessPool;
-        private EcsPool<IncomeProgress> _incomeProgressPool;
+        private EcsPool<IncomeTimer> _incomeProgressPool;
 
         public BusinessViewSystem(
             IUpdater<IReadOnlyList<BusinessViewData>> businessListUpdater,
@@ -35,11 +35,11 @@ namespace _Project.CodeBase.Features.BusinessFeature
 
             _allBusinessesFilter = world
                 .Filter<Business>()
-                .Inc<IncomeProgress>()
+                .Inc<IncomeTimer>()
                 .End();
 
             _businessPool = world.GetPool<Business>();
-            _incomeProgressPool = world.GetPool<IncomeProgress>();
+            _incomeProgressPool = world.GetPool<IncomeTimer>();
         }
 
         public void Run(EcsSystems systems)
@@ -64,7 +64,7 @@ namespace _Project.CodeBase.Features.BusinessFeature
                     Name = businessDefinition.Name,
                     Level = business.Level,
                     Income = business.Level > 0 ? _incomeService.CalculateIncome(business) : businessDefinition.BaseIncome,
-                    IncomeProgress = incomeProgress.CurrentTime.NormalizeProgress(businessDefinition.IncomeDelay),
+                    IncomeProgress = incomeProgress.Time.NormalizeProgress(businessDefinition.IncomeDelay),
                     Cost = businessDefinition.BaseCost,
                 });
             }

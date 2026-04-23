@@ -1,7 +1,7 @@
 ﻿namespace _Project.CodeBase.Features.IncomeFeature
 {
-    public struct IncomeProgress
+    public struct IncomeTimer
     {
-        public float CurrentTime;
+        public float Time;
     }
 }

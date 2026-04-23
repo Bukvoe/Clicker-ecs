@@ -1141,6 +1141,7 @@ GameObject:
   - component: {fileID: 1399813954}
   - component: {fileID: 1399813953}
   - component: {fileID: 1399813955}
+  - component: {fileID: 1399813956}
   m_Layer: 5
   m_Name: Balance
   m_TagString: Untagged
@@ -1233,6 +1234,19 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &1399813956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1399813951}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4d2a579c8bb40c08240f85b44f65572, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.CodeBase.UI.Balance.BalanceView
+  _balanceField: {fileID: 355996908}
 --- !u!1 &1442945264
 GameObject:
   m_ObjectHideFlags: 0
@@ -1782,6 +1796,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Project.CodeBase.Game
   _gameConfig: {fileID: 11400000, guid: 621cbce0bd2a91a499195238a74ad12f, type: 2}
+  _balanceView: {fileID: 1399813956}
   _businessesView: {fileID: 1442945269}
   _businessCardViewPrefab: {fileID: 3191569915429373259, guid: 2b0067e60e65a3e4ba941ab63652445f, type: 3}
 --- !u!4 &2285849444542117169

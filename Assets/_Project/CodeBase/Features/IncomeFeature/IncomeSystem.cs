@@ -1,18 +1,23 @@
-﻿using _Project.CodeBase.Features.BusinessFeature;
+﻿using System.Numerics;
+using _Project.CodeBase.Features.BalanceFeature;
+using _Project.CodeBase.Features.BusinessFeature;
 using _Project.CodeBase.Services;
 using Leopotam.EcsLite;
-using UnityEngine;
 
 namespace _Project.CodeBase.Features.IncomeFeature
 {
     public class IncomeSystem : IEcsInitSystem, IEcsRunSystem
     {
         private readonly IncomeService _incomeService;
-        private EcsFilter _incomeBusinessesFilter;
 
+        private EcsWorld _world;
+        private EcsFilter _incomeBusinessesFilter;
+        private EcsFilter _playerBalanceFilter;
         private EcsPool<Business> _businessPool;
-        private EcsPool<IncomeProgress> _incomeProgressPool;
-        private EcsPool<Income> _incomePool;
+        private EcsPool<IncomeTimer> _timerPool;
+        private EcsPool<Balance> _balancePool;
+        private EcsPool<BalanceDirty> _balanceDirtyPool;
+        private int _playerEntity;
 
         public IncomeSystem(IncomeService incomeService)
         {
@@ -21,35 +26,55 @@ namespace _Project.CodeBase.Features.IncomeFeature
 
         public void Init(EcsSystems systems)
         {
-            var world = systems.GetWorld();
+            _world = systems.GetWorld();
 
-            _incomeBusinessesFilter = world.Filter<Business>()
+            _incomeBusinessesFilter = _world.Filter<Business>()
                 .Inc<OwnedBusiness>()
-                .Inc<IncomeProgress>()
+                .Inc<IncomeTimer>()
                 .End();
 
-            _businessPool = world.GetPool<Business>();
-            _incomeProgressPool = world.GetPool<IncomeProgress>();
-            _incomePool = world.GetPool<Income>();
+            _playerEntity = _world.Filter<Player>()
+                .Inc<Balance>()
+                .End()
+                .GetRawEntities()[0];
+
+            _businessPool = _world.GetPool<Business>();
+            _timerPool = _world.GetPool<IncomeTimer>();
+            _balancePool = _world.GetPool<Balance>();
+            _balanceDirtyPool = _world.GetPool<BalanceDirty>();
         }
 
         public void Run(EcsSystems systems)
         {
+            ref var playerBalance = ref _balancePool.Get(_playerEntity);
+
+            BigInteger totalIncome = 0;
+
             foreach (var entity in _incomeBusinessesFilter)
             {
                 ref var business = ref _businessPool.Get(entity);
-                ref var progress = ref _incomeProgressPool.Get(entity);
-
-                progress.CurrentTime += Time.deltaTime;
+                ref var timer = ref _timerPool.Get(entity);
 
                 var delay = _incomeService.GetIncomeDelay(business.Id);
 
-                if (progress.CurrentTime >= delay)
+                if (timer.Time < delay)
                 {
-                    progress.CurrentTime -= delay;
+                    continue;
+                }
 
-                    ref var income = ref _incomePool.Add(entity);
-                    income.Value = _incomeService.CalculateIncome(business);
+                var incomeCyclesCompleted = (int)(timer.Time / delay);
+                timer.Time -= incomeCyclesCompleted * delay;
+
+                totalIncome += _incomeService.CalculateIncome(business) * incomeCyclesCompleted;
+            }
+
+            if (totalIncome > 0)
+            {
+                playerBalance.Value += totalIncome;
+
+                if (!_balanceDirtyPool.Has(_playerEntity))
+                {
+                    _balanceDirtyPool.Add(_playerEntity);
                 }
             }
         }
