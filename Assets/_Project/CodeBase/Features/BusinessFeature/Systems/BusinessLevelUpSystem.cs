@@ -10,9 +10,9 @@ namespace _Project.CodeBase.Features.BusinessFeature.Systems
 {
     public class BusinessLevelUpSystem : IEcsInitSystem, IEcsRunSystem
     {
+        private readonly IPlayerService _playerService;
         private readonly LevelUpService _levelUpService;
         private readonly BusinessService _businessService;
-        private readonly IPlayerService _playerService;
 
         private EcsFilter _requestFilter;
         private EcsPool<BusinessLevelUpRequest> _requestPool;
@@ -23,13 +23,13 @@ namespace _Project.CodeBase.Features.BusinessFeature.Systems
         private EcsPool<BalanceDirty> _balanceDirtyPool;
 
         public BusinessLevelUpSystem(
+            IPlayerService playerService,
             LevelUpService levelUpService,
-            BusinessService businessService,
-            IPlayerService playerService)
+            BusinessService businessService)
         {
+            _playerService = playerService;
             _levelUpService = levelUpService;
             _businessService = businessService;
-            _playerService = playerService;
         }
 
         public void Init(EcsSystems systems)

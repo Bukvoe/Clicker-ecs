@@ -1796,6 +1796,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Project.CodeBase.Game
   _gameConfig: {fileID: 11400000, guid: 621cbce0bd2a91a499195238a74ad12f, type: 2}
+  _nameConfig: {fileID: 11400000, guid: a2c1c732633a9cd48806585e1c155e4f, type: 2}
   _balanceView: {fileID: 1399813956}
   _businessesView: {fileID: 1442945269}
   _businessCardViewPrefab: {fileID: 3191569915429373259, guid: 2b0067e60e65a3e4ba941ab63652445f, type: 3}

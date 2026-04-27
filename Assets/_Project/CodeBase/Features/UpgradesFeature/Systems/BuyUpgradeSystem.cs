@@ -12,9 +12,9 @@ namespace _Project.CodeBase.Features.UpgradesFeature.Systems
     public class BuyUpgradeSystem : IEcsInitSystem, IEcsRunSystem
     {
         private readonly ConfigService _configService;
+        private readonly IPlayerService _playerService;
         private readonly BusinessService _businessService;
         private readonly UpgradeService _upgradeService;
-        private readonly IPlayerService _playerService;
 
         private EcsWorld _world;
 
@@ -30,14 +30,14 @@ namespace _Project.CodeBase.Features.UpgradesFeature.Systems
 
         public BuyUpgradeSystem(
             ConfigService configService,
+            IPlayerService playerService,
             BusinessService businessService,
-            UpgradeService upgradeService,
-            IPlayerService playerService)
+            UpgradeService upgradeService)
         {
             _configService = configService;
+            _playerService = playerService;
             _businessService = businessService;
             _upgradeService = upgradeService;
-            _playerService = playerService;
         }
 
         public void Init(EcsSystems systems)

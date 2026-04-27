@@ -12,7 +12,6 @@ using _Project.CodeBase.Services.Player;
 using _Project.CodeBase.UI.Balance;
 using _Project.CodeBase.UI.Businesses;
 using _Project.CodeBase.UI.Factories;
-using _Project.CodeBase.UI.Upgrades;
 using Leopotam.EcsLite;
 using UnityEngine;
 
@@ -24,10 +23,11 @@ namespace _Project.CodeBase
         [SerializeField] private BalanceView _balanceView;
         [SerializeField] private BusinessesView _businessesView;
         [SerializeField] private BusinessCardView _businessCardViewPrefab;
-        [SerializeField] private UpgradeButton _upgradeButtonPrefab;
 
         private EcsWorld _world;
         private EcsSystems _systems;
+
+        private SaveService _saveService;
 
         private BalancePresenter _balancePresenter;
         private BusinessesPresenter _businessesPresenter;
@@ -37,28 +37,33 @@ namespace _Project.CodeBase
             _world = new EcsWorld();
 
             var configService = new ConfigService(_gameConfig);
-            var incomeService = new IncomeService(configService);
-            var levelUpService = new LevelUpService(configService);
+            var playerService = new PlayerService();
             var businessService = new BusinessService();
             var upgradeService = new UpgradeService();
-            var playerService = new PlayerService();
+            var levelUpService = new LevelUpService(configService);
+            var incomeService = new IncomeService(configService);
+
+            var loadService = new LoadService(playerService, businessService, upgradeService);
+            _saveService = new SaveService(playerService);
 
             var requestWriter = new EcsRequestWriter(_world);
+
             var cardFactory = new BusinessCardFactory(_businessCardViewPrefab);
 
             var businessViewProvider = new BusinessViewProvider();
             var balanceProvider = new BalanceViewProvider();
 
             _balancePresenter = new BalancePresenter(_balanceView, balanceProvider);
-            _businessesPresenter = new BusinessesPresenter(_businessesView, cardFactory, requestWriter, businessViewProvider, configService);
+            _businessesPresenter = new BusinessesPresenter(_businessesView, businessViewProvider, cardFactory, requestWriter, configService);
 
             _systems = new EcsSystems(_world);
+
             _systems
-                .Add(new BootstrapSystem(configService, businessService, upgradeService, playerService))
+                .Add(new BootstrapSystem(configService, loadService, playerService, businessService, upgradeService))
                 .Add(new IncomeTimerSystem())
                 .Add(new IncomeSystem(incomeService, playerService))
-                .Add(new BusinessLevelUpSystem(levelUpService, businessService, playerService))
-                .Add(new BuyUpgradeSystem(configService, businessService, upgradeService, playerService))
+                .Add(new BusinessLevelUpSystem(playerService, levelUpService, businessService))
+                .Add(new BuyUpgradeSystem(configService, playerService, businessService, upgradeService))
                 .Add(new BalanceViewSystem(playerService, balanceProvider))
                 .Add(new BusinessViewSystem(businessViewProvider, configService, incomeService, levelUpService));
 
@@ -77,6 +82,31 @@ namespace _Project.CodeBase
 
             _systems.Destroy();
             _world.Destroy();
+        }
+
+        private void OnApplicationPause(bool pause)
+        {
+            if (!pause)
+            {
+                return;
+            }
+
+            _saveService.Save(_world);
+        }
+
+        private void OnApplicationFocus(bool focus)
+        {
+            if (focus)
+            {
+                return;
+            }
+
+            _saveService.Save(_world);
+        }
+
+        private void OnApplicationQuit()
+        {
+            _saveService.Save(_world);
         }
     }
 }

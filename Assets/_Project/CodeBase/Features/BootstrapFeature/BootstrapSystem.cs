@@ -7,6 +7,7 @@ using _Project.CodeBase.Features.IncomeFeature.Components;
 using _Project.CodeBase.Features.PlayerFeature;
 using _Project.CodeBase.Features.UpgradesFeature.Components;
 using _Project.CodeBase.Services;
+using _Project.CodeBase.Services.Persistence;
 using _Project.CodeBase.Services.Player;
 using _Project.CodeBase.Shared;
 using Leopotam.EcsLite;
@@ -16,20 +17,23 @@ namespace _Project.CodeBase.Features.BootstrapFeature
     internal class BootstrapSystem : IEcsInitSystem
     {
         private readonly ConfigService _configService;
+        private readonly LoadService _loadService;
+        private readonly PlayerService _playerService;
         private readonly BusinessService _businessService;
         private readonly UpgradeService _upgradeService;
-        private readonly PlayerService _playerService;
 
         public BootstrapSystem(
             ConfigService configService,
+            LoadService loadService,
+            PlayerService playerService,
             BusinessService businessService,
-            UpgradeService upgradeService,
-            PlayerService playerService)
+            UpgradeService upgradeService)
         {
             _configService = configService;
+            _loadService = loadService;
+            _playerService = playerService;
             _businessService = businessService;
             _upgradeService = upgradeService;
-            _playerService = playerService;
         }
 
         public void Init(EcsSystems systems)
@@ -43,6 +47,8 @@ namespace _Project.CodeBase.Features.BootstrapFeature
                 CreateBusiness(world, businessDefinition.Id);
                 CreateUpgrades(world, businessDefinition);
             }
+
+            _loadService.ApplySave(world);
         }
 
         private void CreatePlayer(EcsWorld world)
@@ -84,7 +90,8 @@ namespace _Project.CodeBase.Features.BootstrapFeature
 
         private void CreateUpgrades(EcsWorld world, BusinessDefinition businessDefinition)
         {
-            var pool = world.GetPool<Upgrade>();
+            var upgradePool = world.GetPool<Upgrade>();
+            var upgradeDirtyPool = world.GetPool<UpgradeDirty>();
             var upgradeIds = businessDefinition.UpgradeIds;
 
             foreach (var upgradeId in upgradeIds)
@@ -96,9 +103,11 @@ namespace _Project.CodeBase.Features.BootstrapFeature
 
                 var entity = world.NewEntity();
 
-                ref var upgrade = ref pool.Add(entity);
+                ref var upgrade = ref upgradePool.Add(entity);
                 upgrade.BusinessId = businessDefinition.Id;
                 upgrade.UpgradeId = upgradeId;
+
+                upgradeDirtyPool.SetDirty(entity);
 
                 _upgradeService.Register(upgradeId, entity);
             }
