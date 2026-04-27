@@ -10,5 +10,7 @@ namespace _Project.CodeBase.Configs
         public float IncomeDelay;
         public int BaseCost;
         public int BaseIncome;
+
+        public int[] UpgradeIds;
     }
 }

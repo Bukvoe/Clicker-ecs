@@ -1,7 +1,7 @@
 namespace _Project.CodeBase.Shared.Interfaces
 {
-    public interface ICommandWriter
+    public interface IRequestWriter
     {
-        public void WriteCommand<T>(T command) where T : struct, ICommand;
+        public void WriteRequest<T>(T request) where T : struct, IRequest;
     }
 }

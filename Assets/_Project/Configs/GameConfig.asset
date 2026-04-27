@@ -19,23 +19,69 @@ MonoBehaviour:
     IncomeDelay: 3
     BaseCost: 3
     BaseIncome: 3
+    UpgradeIds: 0100000002000000
   - Id: 2
     Name: Business 2
     IncomeDelay: 6
     BaseCost: 40
     BaseIncome: 40
+    UpgradeIds: 0300000004000000
   - Id: 3
     Name: Business 3
     IncomeDelay: 10
     BaseCost: 200
     BaseIncome: 200
+    UpgradeIds: 0500000006000000
   - Id: 4
     Name: Business 4
     IncomeDelay: 17
     BaseCost: 1000
     BaseIncome: 1000
+    UpgradeIds: 0700000008000000
   - Id: 5
     Name: Business 5
     IncomeDelay: 30
     BaseCost: 5000
     BaseIncome: 5000
+    UpgradeIds: 090000000a000000
+  UpgradeDefinitions:
+  - Id: 1
+    Name: Upgrade 1
+    Cost: 50
+    IncomeMultiplier: 0.5
+  - Id: 2
+    Name: Upgrade 2
+    Cost: 400
+    IncomeMultiplier: 1
+  - Id: 3
+    Name: Upgrade 1
+    Cost: 1200
+    IncomeMultiplier: 1
+  - Id: 4
+    Name: Upgrade 2
+    Cost: 4000
+    IncomeMultiplier: 2
+  - Id: 5
+    Name: Upgrade 1
+    Cost: 6000
+    IncomeMultiplier: 1
+  - Id: 6
+    Name: Upgrade 2
+    Cost: 20000
+    IncomeMultiplier: 1.5
+  - Id: 7
+    Name: Upgrade 1
+    Cost: 15000
+    IncomeMultiplier: 1
+  - Id: 8
+    Name: Upgrade 2
+    Cost: 50000
+    IncomeMultiplier: 2
+  - Id: 9
+    Name: Upgrade 1
+    Cost: 100000
+    IncomeMultiplier: 2
+  - Id: 10
+    Name: Upgrade 2
+    Cost: 500000
+    IncomeMultiplier: 4

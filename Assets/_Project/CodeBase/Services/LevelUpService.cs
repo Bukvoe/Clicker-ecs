@@ -1,5 +1,5 @@
 ﻿using System.Numerics;
-using _Project.CodeBase.Features.BusinessFeature;
+using _Project.CodeBase.Features.BusinessFeature.Components;
 using UnityEngine;
 
 namespace _Project.CodeBase.Services
@@ -15,9 +15,7 @@ namespace _Project.CodeBase.Services
 
         public BigInteger CalculateLevelUpCost(Business business)
         {
-            var businessDefinition = _configService.GetBusiness(business.Id);
-
-            if (businessDefinition == null)
+            if (!_configService.TryGetBusiness(business.Id, out var businessDefinition))
             {
                 Debug.LogError($"{nameof(businessDefinition)} {business.Id} not found");
                 return BigInteger.Zero;
