@@ -8,5 +8,6 @@ namespace _Project.CodeBase.Configs
     {
         public List<int> BusinessIdsOnStart;
         public List<BusinessDefinition> BusinessDefinitions;
+        public List<UpgradeDefinition> UpgradeDefinitions;
     }
 }

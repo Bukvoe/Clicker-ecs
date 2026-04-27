@@ -1,11 +1,14 @@
-﻿using System.Numerics;
-using _Project.CodeBase.Features.BusinessFeature;
+﻿using System.Collections.Generic;
+using System.Numerics;
+using _Project.CodeBase.Features.BusinessFeature.Components;
 using UnityEngine;
 
 namespace _Project.CodeBase.Services
 {
     public class IncomeService
     {
+        private const int Precision = 10_000;
+
         private readonly ConfigService _configService;
 
         public IncomeService(ConfigService configService)
@@ -13,23 +16,49 @@ namespace _Project.CodeBase.Services
             _configService = configService;
         }
 
-        public float GetIncomeDelay(int businessId)
+        public float GetIncomeInterval(int businessId)
         {
-            var businessDefinition = _configService.GetBusiness(businessId);
-            return businessDefinition?.IncomeDelay ?? 0f;
+            if (!_configService.TryGetBusiness(businessId, out var businessDefinition))
+            {
+                Debug.LogError($"Business {businessId} not found");
+                return 0f;
+            }
+
+            return businessDefinition.IncomeDelay;
         }
 
-        public BigInteger CalculateIncome(Business business)
+        public BigInteger CalculateIncome(Business business, IReadOnlyList<int> upgrades)
         {
-            var businessDefinition = _configService.GetBusiness(business.Id);
-
-            if (businessDefinition == null)
+            if (!_configService.TryGetBusiness(business.Id, out var businessDefinition))
             {
-                Debug.LogError($"{nameof(businessDefinition)} {business.Id} not found");
+                Debug.LogError($"Business {business.Id} not found");
                 return BigInteger.Zero;
             }
 
-            return business.Level * businessDefinition.BaseIncome;
+            var baseIncome = CalculateBaseIncome(business.Level, businessDefinition.BaseIncome);
+            var multiplier = CalculateMultiplier(upgrades);
+
+            return baseIncome * multiplier / Precision;
+        }
+
+        private BigInteger CalculateBaseIncome(int level, BigInteger baseIncome)
+        {
+            return level * baseIncome;
+        }
+
+        private BigInteger CalculateMultiplier(IReadOnlyList<int> upgrades)
+        {
+            BigInteger multiplier = Precision;
+
+            for (var i = 0; i < upgrades.Count; i++)
+            {
+                if (_configService.TryGetUpgrade(upgrades[i], out var upgradeDefinition))
+                {
+                    multiplier += (BigInteger)(upgradeDefinition.IncomeMultiplier * Precision);
+                }
+            }
+
+            return multiplier;
         }
     }
 }

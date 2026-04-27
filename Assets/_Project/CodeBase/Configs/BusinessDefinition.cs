@@ -6,9 +6,10 @@ namespace _Project.CodeBase.Configs
     public class BusinessDefinition
     {
         public int Id;
-        public string Name;
         public float IncomeDelay;
         public int BaseCost;
         public int BaseIncome;
+
+        public int[] UpgradeIds;
     }
 }

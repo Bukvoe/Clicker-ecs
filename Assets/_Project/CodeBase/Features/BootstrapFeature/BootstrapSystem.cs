@@ -1,8 +1,15 @@
 using System.Linq;
-using _Project.CodeBase.Features.BalanceFeature;
-using _Project.CodeBase.Features.BusinessFeature;
-using _Project.CodeBase.Features.IncomeFeature;
+using System.Numerics;
+using _Project.CodeBase.Configs;
+using _Project.CodeBase.Features.BalanceFeature.Components;
+using _Project.CodeBase.Features.BusinessFeature.Components;
+using _Project.CodeBase.Features.IncomeFeature.Components;
+using _Project.CodeBase.Features.PlayerFeature;
+using _Project.CodeBase.Features.UpgradesFeature.Components;
 using _Project.CodeBase.Services;
+using _Project.CodeBase.Services.Persistence;
+using _Project.CodeBase.Services.Player;
+using _Project.CodeBase.Shared;
 using Leopotam.EcsLite;
 
 namespace _Project.CodeBase.Features.BootstrapFeature
@@ -10,41 +17,99 @@ namespace _Project.CodeBase.Features.BootstrapFeature
     internal class BootstrapSystem : IEcsInitSystem
     {
         private readonly ConfigService _configService;
+        private readonly LoadService _loadService;
+        private readonly PlayerService _playerService;
+        private readonly BusinessService _businessService;
+        private readonly UpgradeService _upgradeService;
 
-        public BootstrapSystem(ConfigService configService)
+        public BootstrapSystem(
+            ConfigService configService,
+            LoadService loadService,
+            PlayerService playerService,
+            BusinessService businessService,
+            UpgradeService upgradeService)
         {
             _configService = configService;
+            _loadService = loadService;
+            _playerService = playerService;
+            _businessService = businessService;
+            _upgradeService = upgradeService;
         }
 
         public void Init(EcsSystems systems)
         {
             var world = systems.GetWorld();
 
-            var entity = world.NewEntity();
-
-            world.GetPool<Player>().Add(entity);
-            ref var balance = ref world.GetPool<Balance>().Add(entity);
-            balance.Value = 0;
-
-            var businessPool = world.GetPool<Business>();
-            var incomeProgressPool = world.GetPool<IncomeTimer>();
-            var ownedBusinessPool = world.GetPool<OwnedBusiness>();
+            CreatePlayer(world);
 
             foreach (var businessDefinition in _configService.AllBusinesses)
             {
-                entity = world.NewEntity();
+                CreateBusiness(world, businessDefinition.Id);
+                CreateUpgrades(world, businessDefinition);
+            }
 
-                ref var business = ref businessPool.Add(entity);
-                business.Id = businessDefinition.Id;
+            _loadService.ApplySave(world);
+        }
 
-                ref var progress = ref incomeProgressPool.Add(entity);
-                progress.Time = 0f;
+        private void CreatePlayer(EcsWorld world)
+        {
+            var playerEntity = world.NewEntity();
 
-                if (_configService.BusinessIdsOnStart.Contains(businessDefinition.Id))
+            world.GetPool<Player>().Add(playerEntity);
+
+            ref var balance = ref world.GetPool<Balance>().Add(playerEntity);
+            balance.Value = BigInteger.Zero;
+
+            _playerService.SetPlayerEntity(playerEntity);
+        }
+
+        private void CreateBusiness(EcsWorld world, int businessId)
+        {
+            var businessEntity = world.NewEntity();
+
+            ref var business = ref world.GetPool<Business>().Add(businessEntity);
+            business.Id = businessId;
+            business.Level = 0;
+
+            world.GetPool<IncomeTimer>().Add(businessEntity);
+            world.GetPool<BusinessDirty>().SetDirty(businessEntity);
+
+            if (IsStarterBusiness(businessId))
+            {
+                world.GetPool<OwnedBusiness>().Add(businessEntity);
+                business.Level = 1;
+            }
+
+            _businessService.Register(businessId, businessEntity);
+        }
+
+        private bool IsStarterBusiness(int businessId)
+        {
+            return _configService.BusinessIdsOnStart.Contains(businessId);
+        }
+
+        private void CreateUpgrades(EcsWorld world, BusinessDefinition businessDefinition)
+        {
+            var upgradePool = world.GetPool<Upgrade>();
+            var upgradeDirtyPool = world.GetPool<UpgradeDirty>();
+            var upgradeIds = businessDefinition.UpgradeIds;
+
+            foreach (var upgradeId in upgradeIds)
+            {
+                if (!_configService.TryGetUpgrade(upgradeId, out _))
                 {
-                    ownedBusinessPool.Add(entity);
-                    business.Level = 1;
+                    continue;
                 }
+
+                var entity = world.NewEntity();
+
+                ref var upgrade = ref upgradePool.Add(entity);
+                upgrade.BusinessId = businessDefinition.Id;
+                upgrade.UpgradeId = upgradeId;
+
+                upgradeDirtyPool.SetDirty(entity);
+
+                _upgradeService.Register(upgradeId, entity);
             }
         }
     }
