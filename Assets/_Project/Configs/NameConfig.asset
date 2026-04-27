@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddcb6052bba34b36a4bebe0be2b0c3a6, type: 3}
+  m_Name: NameConfig
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.CodeBase.Configs.NameConfig
+  BusinessNames:
+  - Id: 1
+    Name: Business 1
+  - Id: 2
+    Name: Business 2
+  - Id: 3
+    Name: Business 3
+  - Id: 4
+    Name: Business 4
+  - Id: 5
+    Name: Business 5
+  UpgradeNames:
+  - Id: 1
+    Name: Upgrade 1
+  - Id: 2
+    Name: Upgrade 2
+  - Id: 3
+    Name: Upgrade 1
+  - Id: 4
+    Name: 'Upgrade 2 '
+  - Id: 5
+    Name: Upgrade 1
+  - Id: 6
+    Name: 'Upgrade 2 '
+  - Id: 7
+    Name: Upgrade 1
+  - Id: 8
+    Name: 'Upgrade 2 '
+  - Id: 9
+    Name: Upgrade 1
+  - Id: 10
+    Name: 'Upgrade 2 '

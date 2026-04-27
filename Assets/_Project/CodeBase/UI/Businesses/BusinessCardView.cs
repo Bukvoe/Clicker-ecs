@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using _Project.CodeBase.Configs;
+using _Project.CodeBase.Services;
 using _Project.CodeBase.Shared;
 using _Project.CodeBase.UI.Upgrades;
 using TMPro;
@@ -52,23 +53,28 @@ namespace _Project.CodeBase.UI.Businesses
             _levelUpCostField.text = $"{levelUpCost.ToCurrencyString()}";
         }
 
-        public void InitializeUpgrades(List<UpgradeDefinition> upgradeDefinitions)
+        public void InitializeUpgrades(List<UpgradeDefinition> upgradeDefinitions, ConfigService configService)
         {
             foreach (var upgradeDefinition in upgradeDefinitions)
             {
                 var upgradeButton = Instantiate(_upgradeButtonPrefab, _upgradesContainer);
-                upgradeButton.SetData(upgradeDefinition, false);
+
+                upgradeButton.SetData(
+                    upgradeDefinition: upgradeDefinition,
+                    upgradeName: configService.GetUpgradeName(upgradeDefinition.Id),
+                    isBought: false);
+
                 upgradeButton.Clicked += OnUpgradeClicked;
 
                 _upgradeButtons[upgradeDefinition.Id] = upgradeButton;
             }
         }
 
-        public void UpdateUpgrade(UpgradeDefinition upgradeDefinition, bool isBought)
+        public void UpdateUpgrade(UpgradeDefinition upgradeDefinition, string upgradeName, bool isBought)
         {
-            if (_upgradeButtons.TryGetValue(upgradeDefinition.Id, out var btn))
+            if (_upgradeButtons.TryGetValue(upgradeDefinition.Id, out var button))
             {
-                btn.SetData(upgradeDefinition, isBought);
+                button.SetData(upgradeDefinition, upgradeName, isBought);
             }
         }
 

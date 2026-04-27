@@ -8,6 +8,7 @@ using _Project.CodeBase.Features.IncomeFeature.Systems;
 using _Project.CodeBase.Features.UpgradesFeature.Systems;
 using _Project.CodeBase.Infrastructure;
 using _Project.CodeBase.Services;
+using _Project.CodeBase.Services.Persistence;
 using _Project.CodeBase.Services.Player;
 using _Project.CodeBase.UI.Balance;
 using _Project.CodeBase.UI.Businesses;
@@ -20,6 +21,7 @@ namespace _Project.CodeBase
     public class EntryPoint : MonoBehaviour
     {
         [SerializeField] private GameConfig _gameConfig;
+        [SerializeField] private NameConfig _nameConfig;
         [SerializeField] private BalanceView _balanceView;
         [SerializeField] private BusinessesView _businessesView;
         [SerializeField] private BusinessCardView _businessCardViewPrefab;
@@ -36,7 +38,7 @@ namespace _Project.CodeBase
         {
             _world = new EcsWorld();
 
-            var configService = new ConfigService(_gameConfig);
+            var configService = new ConfigService(_gameConfig, _nameConfig);
             var playerService = new PlayerService();
             var businessService = new BusinessService();
             var upgradeService = new UpgradeService();

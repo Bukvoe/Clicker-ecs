@@ -29,15 +29,15 @@ namespace _Project.CodeBase.UI.Upgrades
             _button.onClick.RemoveAllListeners();
         }
 
-        public void SetData(UpgradeDefinition upgradeDefinition, bool bought)
+        public void SetData(UpgradeDefinition upgradeDefinition, string upgradeName, bool isBought)
         {
             _upgradeId = upgradeDefinition.Id;
 
-            _nameField.text = upgradeDefinition.Name;
+            _nameField.text = upgradeName;
             _descriptionField.text = $"+{upgradeDefinition.IncomeMultiplier * 100}%";
-            _costField.text = bought ? "Bought" : $"{((BigInteger)upgradeDefinition.Cost).ToCurrencyString()}";
+            _costField.text = isBought ? "Bought" : $"{((BigInteger)upgradeDefinition.Cost).ToCurrencyString()}";
 
-            _button.interactable = !bought;
+            _button.interactable = !isBought;
         }
 
         private void OnClicked()

@@ -26,9 +26,9 @@ namespace _Project.CodeBase.UI.Businesses
 
         public BusinessesPresenter(
             BusinessesView businessesView,
+            IBusinessViewListener businessViewListener,
             BusinessCardFactory businessCardFactory,
             IRequestWriter requestWriter,
-            IBusinessViewListener businessViewListener,
             ConfigService configService)
         {
             _businessesView = businessesView;
@@ -60,7 +60,7 @@ namespace _Project.CodeBase.UI.Businesses
             card.SetId(businessId);
 
             _configService.TryGetBusiness(businessId, out var businessDefinition);
-            card.SetName(businessDefinition.Name);
+            card.SetName(_configService.GetBusinessName(businessId));
 
             var upgradeDefinitions = new List<UpgradeDefinition>();
 
@@ -72,7 +72,7 @@ namespace _Project.CodeBase.UI.Businesses
                 }
             }
 
-            card.InitializeUpgrades(upgradeDefinitions);
+            card.InitializeUpgrades(upgradeDefinitions, _configService);
             card.LevelUpClicked += OnLevelUpClicked;
             card.UpgradeClicked += OnUpgradeClicked;
         }
@@ -116,7 +116,10 @@ namespace _Project.CodeBase.UI.Businesses
             if (_cardById.TryGetValue(upgradeViewData.BusinessId, out var card)
                 && _configService.TryGetUpgrade(upgradeViewData.UpgradeId, out var upgradeDefinition))
             {
-                card.UpdateUpgrade(upgradeDefinition, upgradeViewData.IsBought);
+                card.UpdateUpgrade(
+                    upgradeDefinition: upgradeDefinition,
+                    upgradeName: _configService.GetUpgradeName(upgradeViewData.UpgradeId),
+                    isBought: upgradeViewData.IsBought);
             }
         }
 

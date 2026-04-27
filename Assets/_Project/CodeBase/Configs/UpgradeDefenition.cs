@@ -6,7 +6,6 @@ namespace _Project.CodeBase.Configs
     public class UpgradeDefinition
     {
         public int Id;
-        public string Name;
         public long Cost;
         public float IncomeMultiplier;
     }
